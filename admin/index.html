@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Buttons</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General styling for the page */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0; /* Background color for the page */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container styling */
+        .button-container {
+            background-color: #ffffff; /* Background color for the container */
+            border-radius: 8px; /* Rounded corners for the container */
+            padding: 20px; /* Padding inside the container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for the container */
+            width: 300px; /* Width of the container */
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        /* Button pair styling */
+        .button-pair {
+            display: flex;
+            justify-content: space-between; /* Spread buttons evenly */
+            margin-bottom: 20px;
+        }
+
+        /* Basic styling for buttons */
+        .button {
+            background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 100%);
+            position: relative;
+            padding: 5px; /* Adjust padding to reduce button size */
+            display: inline-block;
+            border-radius: 7px;
+        }
+
+        .button span {
+            display: inline-block;
+            background: #191919;
+            color: white;
+            text-transform: uppercase;
+            padding: 0.8rem 1.6rem; /* Adjust padding to reduce text size */
+            border-radius: 5px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-weight: 800;
+            font-size: 10px; /* Adjust font size */
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <div class="button-pair">
+            <a href="main.html" class="button">
+                <span>Add product</span>
+            </a>
+            <a href="#0" class="button">
+                <span>Edit Product</span>
+            </a>
+        </div>
+        
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

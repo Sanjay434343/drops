@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "904925867242",
+    "firebase_url": "https://dropshipping-98eb5-default-rtdb.firebaseio.com",
+    "project_id": "dropshipping-98eb5",
+    "storage_bucket": "dropshipping-98eb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904925867242:android:4f6a2b1619f00100f8fb93",
+        "android_client_info": {
+          "package_name": "com.dp.dropshipping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
