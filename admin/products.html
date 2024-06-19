@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product List</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;800&display=swap');
+
+    /* Reset default styles */
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    /* Body and global styles */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa; /* Light gray background */
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 800px; /* Adjusted max-width for better readability */
+        margin: 30px auto;
+        background-color: #fff; /* White background */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+    .product-list {
+        margin-top: 20px;
+    }
+
+    .product-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+    }
+
+    .product-item h3 {
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .product-item img {
+        max-width: 100px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .product-item p {
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    .product-item .btn-group {
+        margin-top: 10px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        margin-right: 10px;
+        border: none;
+        margin-bottom: 6px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-transform: uppercase;
+        background-color: #ffdcdd;
+    }
+
+    .btn.change-image {
+        background-color: #830002; /* Change image button background color */
+        color: #fff; /* Change image button text color */
+    }
+
+    .btn.change-name {
+        background-color: #4CAF50; /* Change name button background color */
+        color: #fff; /* Change name button text color */
+    }
+
+    .btn.change-tag {
+        background-color: #FF9800; /* Change tag button background color */
+        color: #fff; /* Change tag button text color */
+    }
+
+    .btn.delete {
+        background-color: #f44336; /* Delete button background color */
+        color: #fff; /* Delete button text color */
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-body {
+        padding: 20px 0;
+    }
+
+    .modal-body input {
+        width: calc(100% - 40px);
+        margin: 10px 20px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .modal-footer {
+        text-align: right;
+    }
+
+    .btn-modal {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-right: 10px;
+    }
+
+    .btn-modal.cancel {
+        background-color: #f44336;
+    }
+
+    .btn-modal:hover {
+        opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product List</h1>
+    <div class="product-list" id="productList">
+      <!-- Products will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-body" id="modalBody">
+        <!-- Modal body content will be dynamically added here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal" onclick="saveModal()">Save</button>
+        <button class="btn-modal cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
+        authDomain: "dropshipping-98eb5.firebaseapp.com",
+        projectId: "dropshipping-98eb5",
+        storageBucket: "dropshipping-98eb5.appspot.com",
+        messagingSenderId: "904925867242",
+        appId: "1:904925867242:web:af0abda866826e92f8fb93",
+        measurementId: "G-BVZR8HY1SR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const productList = document.getElementById('productList');
+    const modal = document.getElementById('myModal');
+    const modalBody = document.getElementById('modalBody');
+
+    // Function to fetch and display products
+    function fetchProducts() {
+        productList.innerHTML = ''; // Clear existing product list
+
+        // Reference to 'products' node in Firebase
+        const productsRef = database.ref('products');
+
+        productsRef.once('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                const productKey = childSnapshot.key;
+                const productData = childSnapshot.val();
+
+                // Check if tags array exists and is not empty
+                const tagsString = productData.tags && productData.tags.length > 0 ? productData.tags.join(', ') : '';
+
+                // Create HTML elements for each product
+                const productItem = document.createElement('div');
+                productItem.classList.add('product-item');
+                productItem.setAttribute('data-key', productKey);
+
+                // Product Name
+                const productName = document.createElement('h3');
+                productName.textContent = productData.name;
+                productItem.appendChild(productName);
+
+                // Product Images
+                if (productData.images && productData.images.length > 0) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.classList.add('image-container');
+                    productData.images.forEach((imageUrl) => {
+                        const productImage = document.createElement('img');
+                        productImage.src = imageUrl;
+                        productImage.alt = productData.name;
+                        productImage.classList.add('product-image');
+                        imageContainer.appendChild(productImage);
+                    });
+                    productItem.appendChild(imageContainer);
+                }
+
+                // Product Price
+                const productPrice = document.createElement('p');
+                productPrice.textContent = `Price: ${productData.price}`;
+                productItem.appendChild(productPrice);
+
+                // Product Tags
+                const productTags = document.createElement('p');
+                productTags.textContent = `Tags: ${tagsString}`;
+                productItem.appendChild(productTags);
+
+                // Buttons (Change Image, Change Name, Change Tag, Delete)
+                const btnGroup = document.createElement('div');
+                btnGroup.classList.add('btn-group');
+                const changeImageBtn = createButton('Change Image', () => openChangeImageModal(productKey));
+                const changeNameBtn = createButton('Change Name', () => openChangeNameModal(productKey));
+                const changeTagBtn = createButton('Change Tag', () => openChangeTagModal(productKey));
+                const deleteBtn = createButton('Delete', () => deleteProduct(productKey));
+                btnGroup.appendChild(changeImageBtn);
+                btnGroup.appendChild(                changeNameBtn);
+                btnGroup.appendChild(changeTagBtn);
+                btnGroup.appendChild(deleteBtn);
+                productItem.appendChild(btnGroup);
+
+                productList.appendChild(productItem);
+            });
+        });
+    }
+
+    // Function to create a button element
+    function createButton(text, onClick) {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.classList.add('btn');
+        button.addEventListener('click', onClick);
+        return button;
+    }
+
+    // Function to open modal for changing product image
+    function openChangeImageModal(productKey) {
+        modalBody.innerHTML = ''; // Clear previous modal content
+
+        // Example content for the modal
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.placeholder = 'Enter new image URL';
+        inputField.classList.add('modal-input');
+
+        modalBody.appendChild(inputField);
+        modal.style.display = 'block';
+    }
+
+    // Function to open modal for changing product name
+    function openChangeNameModal(productKey) {
+        modalBody.innerHTML = ''; // Clear previous modal content
+
+        // Example content for the modal
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.placeholder = 'Enter new product name';
+        inputField.classList.add('modal-input');
+
+        modalBody.appendChild(inputField);
+        modal.style.display = 'block';
+    }
+
+    // Function to open modal for changing product tags
+    function openChangeTagModal(productKey) {
+        modalBody.innerHTML = ''; // Clear previous modal content
+
+        // Example content for the modal
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.placeholder = 'Enter new tags separated by commas';
+        inputField.classList.add('modal-input');
+
+        modalBody.appendChild(inputField);
+        modal.style.display = 'block';
+    }
+
+    // Function to delete a product
+    function deleteProduct(productKey) {
+        const productRef = database.ref(`products/${productKey}`);
+        productRef.remove()
+            .then(() => {
+                console.log('Product successfully deleted!');
+                fetchProducts(); // Refresh the product list
+            })
+            .catch((error) => {
+                console.error('Error removing product: ', error);
+            });
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    // Function to save changes from the modal
+    function saveModal() {
+        // Add functionality to save changes here
+        closeModal();
+    }
+
+    // Fetch products when the page loads
+    window.onload = fetchProducts;
+
+  </script>
+</body>
+</html>
+

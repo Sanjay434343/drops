@@ -71,16 +71,19 @@
                     const productCard = document.createElement('div');
                     productCard.classList.add('col-lg-3', 'col-sm-6', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-center', 'product-item', 'my-3');
         
-                    // Product image
-                    const productImage = document.createElement('img');
-                    productImage.src = productData.imageUrl;
-                    productImage.alt = productData.name;
-                    productCard.appendChild(productImage);
+                    // Product images
+                    const images = productData.images; // Assuming 'images' is an array of image URLs
+                    if (images && images.length > 0) {
+                        const productImage = document.createElement('img');
+                        productImage.src = images[0]; // Display the first image for simplicity
+                        productImage.alt = productData.name;
+                        productCard.appendChild(productImage);
+                    }
         
                     // Icons (expand, heart, shopping bag)
                     const iconsList = document.createElement('ul');
                     iconsList.classList.add('icons', 'd-flex', 'align-items-center', 'justify-content-center', 'list-unstyled');
-                    const expandIcon = createIcon('fas fa-expand-arrows-alt');
+                    const expandIcon = createIcon('fas fa-expand-arrows-alt', productId); // Pass productId to createIcon
                     const heartIcon = createIcon('far fa-heart');
                     const shoppingBagIcon = createIcon('fas fa-shopping-bag');
                     iconsList.appendChild(expandIcon);
@@ -88,11 +91,19 @@
                     iconsList.appendChild(shoppingBagIcon);
                     productCard.appendChild(iconsList);
         
-                    // Tag (assuming you have a tag property in productData)
-                    const tag = document.createElement('div');
-                    tag.classList.add('tag');
-                    tag.textContent = productData.tag; // Assuming tag is stored as a direct property
-                    productCard.appendChild(tag);
+                    // Tags (assuming you have a tags array in productData)
+                    const tags = productData.tags; // Assuming tags is an array of tags
+                    if (tags && tags.length > 0) {
+                        const tagsContainer = document.createElement('div');
+                        tagsContainer.classList.add('tags-container');
+                        tags.forEach(tag => {
+                            const tagElement = document.createElement('div');
+                            tagElement.classList.add('tag');
+                            tagElement.textContent = tag;
+                            tagsContainer.appendChild(tagElement);
+                        });
+                        productCard.appendChild(tagsContainer);
+                    }
         
                     // Title
                     const title = document.createElement('div');
@@ -101,19 +112,12 @@
                     productCard.appendChild(title);
         
                     // Star rating (assuming you want a fixed rating for all products)
-                    const starRating = document.createElement('div');
-                    starRating.classList.add('star-rating', 'd-flex', 'align-content-center', 'justify-content-center');
-                    for (let i = 0; i < 5; i++) {
-                        const starIcon = document.createElement('span');
-                        starIcon.classList.add('fas', 'fa-star');
-                        starRating.appendChild(starIcon);
-                    }
-                    productCard.appendChild(starRating);
+                    
         
                     // Price
                     const price = document.createElement('div');
                     price.classList.add('price');
-                    price.textContent = '$ ' + productData.price;
+                    price.textContent = '₹ ' + productData.price;
                     productCard.appendChild(price);
         
                     // Append product card to the container
@@ -121,10 +125,9 @@
                 });
             });
         }
-        
 
         // Helper function to create icon elements
-        function createIcon(className) {
+        function createIcon(className, productId) {
             const icon = document.createElement('li');
             icon.classList.add('icon');
             
@@ -140,7 +143,19 @@
             // Adjust this logic based on your specific HTML structure
             iconSpan.classList.add('icon-span');
             icon.appendChild(iconSpan);
+
+            // Add click event to navigate to product details page with productId
+            icon.addEventListener('click', () => {
+                navigateToProductDetails(productId);
+            });
+
             return icon;
+        }
+
+        // Function to navigate to product details page with productId as query parameter
+        function navigateToProductDetails(productId) {
+            // Redirect to another page with productId as query parameter
+            window.location.href = `product-details.html?productId=${productId}`;
         }
 
         // Call the function to display products

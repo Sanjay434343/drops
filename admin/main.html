@@ -4,92 +4,231 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Management</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    form {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+    
+    #statusMessage {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .size-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .size-checkboxes label {
+      display: block;
+      padding: 8px 12px;
+      font-size: 14px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+      }
+    }
+    
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Add a New Product</h1>
     <form id="productForm">
-      <label for="productName">Product Name:</label>
-      <input type="text" id="productName" required><br><br>
-      
-      <label for="productPrice">Product Price:</label>
-      <input type="number" id="productPrice" required><br><br>
-      
-      <label for="tagSelect">Select Tag:</label>
-      <select id="tagSelect" multiple>
-        <option value="sale">Sale</option>
-        <option value="out-of-stock">Out of Stock</option>
-        <option value="new">New</option>
-      </select><br><br>
-      
-      <label for="imageUrl">Image URL:</label>
-      <input type="url" id="imageUrl" placeholder="Enter image URL"><br><br>
-      
-      <button type="submit">Add Product</button>
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" required><br><br>
+        
+        <label for="productPrice">Product Price:</label>
+        <input type="number" id="productPrice" required><br><br>
+        
+        <label for="tagSelect">Select Tag:</label>
+        <select id="tagSelect" multiple>
+            <option value="sale">Sale</option>
+            <option value="out-of-stock">Out of Stock</option>
+            <option value="new">New</option>
+        </select><br><br>
+        
+        <label for="imageUrl">Image URLs (Separate with commas):</label>
+        <input type="text" id="imageUrl" placeholder="Enter image URLs"><br><br>
+        
+        <label for="productColor">Select Color:</label>
+        <input type="text" id="productColor" placeholder="Enter color options"><br><br>
+        
+        <label for="clothingSizes">Clothing Sizes:</label>
+        <div id="clothingSizes" class="size-checkboxes">
+          <label><input type="checkbox" value="XS"> XS</label>
+          <label><input type="checkbox" value="S"> S</label>
+          <label><input type="checkbox" value="M"> M</label>
+          <label><input type="checkbox" value="L"> L</label>
+          <label><input type="checkbox" value="XL"> XL</label>
+          <label><input type="checkbox" value="XXL"> XXL</label>
+        </div><br>
+        
+        <label for="shoeSizes">Footware Sizes:</label>
+        <div id="shoeSizes" class="size-checkboxes">
+          <label><input type="checkbox" value="1"> 1</label>
+          <label><input type="checkbox" value="2"> 2</label>
+          <label><input type="checkbox" value="3"> 3</label>
+          <label><input type="checkbox" value="4"> 4</label>
+          <label><input type="checkbox" value="5"> 5</label>
+          <label><input type="checkbox" value="6"> 6</label>
+          <label><input type="checkbox" value="7"> 7</label>
+          <label><input type="checkbox" value="8"> 8</label>
+          <label><input type="checkbox" value="9"> 9</label>
+          <label><input type="checkbox" value="10"> 10</label>
+          <label><input type="checkbox" value="11"> 11</label>
+        </div><br>
+        
+        <button type="submit">Add Product</button>
     </form>
+
+    <div id="statusMessage"></div>
   </div>
 
   <!-- Include Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
 
- <script>
+  <script>
     // Initialize Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
-    authDomain: "dropshipping-98eb5.firebaseapp.com",
-    projectId: "dropshipping-98eb5",
-    storageBucket: "dropshipping-98eb5.appspot.com",
-    messagingSenderId: "904925867242",
-    appId: "1:904925867242:web:af0abda866826e92f8fb93",
-    measurementId: "G-BVZR8HY1SR"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
+      authDomain: "dropshipping-98eb5.firebaseapp.com",
+      projectId: "dropshipping-98eb5",
+      storageBucket: "dropshipping-98eb5.appspot.com",
+      messagingSenderId: "904925867242",
+      appId: "1:904925867242:web:af0abda866826e92f8fb93",
+      measurementId: "G-BVZR8HY1SR"
+    };
 
-  
-  firebase.initializeApp(firebaseConfig);
-  
-  // Reference to your Firebase database
-  const database = firebase.database();
-  
-  // Form submission handling
-  const productForm = document.getElementById('productForm');
-  
-  productForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-  
-    const productName = document.getElementById('productName').value;
-    const productPrice = document.getElementById('productPrice').value;
-    const imageUrl = document.getElementById('imageUrl').value;
-  
-    // Get selected tag
-    const tagSelect = document.getElementById('tagSelect');
-    let selectedTag = "";
-    for (let i = 0; i < tagSelect.options.length; i++) {
-      if (tagSelect.options[i].selected) {
-        selectedTag = tagSelect.options[i].value.replace("-", "_"); // Replace hyphens with underscores for Firebase compatibility
-        break;
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to your Firebase database
+    const database = firebase.database();
+
+    // Form submission handling
+    const productForm = document.getElementById('productForm');
+
+    productForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const productName = document.getElementById('productName').value;
+      const productPrice = document.getElementById('productPrice').value;
+      const imageUrl = document.getElementById('imageUrl').value.split(',');
+      const productColor = document.getElementById('productColor').value.split(',');
+
+      // Get selected clothing sizes
+      const clothingSizesCheckboxes = document.querySelectorAll('#clothingSizes input[type="checkbox"]:checked');
+      let clothingSizes = [];
+      clothingSizesCheckboxes.forEach(checkbox => {
+        clothingSizes.push(checkbox.value);
+      });
+
+      // Get selected shoe sizes
+      const shoeSizesCheckboxes = document.querySelectorAll('#shoeSizes input[type="checkbox"]:checked');
+      let shoeSizes = [];
+      shoeSizesCheckboxes.forEach(checkbox => {
+        shoeSizes.push(checkbox.value);
+      });
+
+      // Get selected tags
+      const tagSelect = document.getElementById('tagSelect');
+      let selectedTags = [];
+      for (let i = 0; i < tagSelect.options.length; i++) {
+        if (tagSelect.options[i].selected) {
+          selectedTags.push(tagSelect.options[i].value.replace("-", "_")); // Replace hyphens with underscores for Firebase compatibility
+        }
       }
-    }
-  
-    // Push the new product to Firebase database under 'products' node
-    const newProductRef = database.ref('products').push();
-    newProductRef.set({
-      name: productName,
-      price: productPrice,
-      imageUrl: imageUrl,
-      tag: selectedTag // Store selected tag directly as a property
-    })
-    .then(() => {
-      console.log("Product added successfully to Firebase!");
-      // Clear the form fields
-      productForm.reset();
-    })
-    .catch((error) => {
-      console.error("Error adding product to Firebase:", error);
+
+      // Prepare the product object
+      const newProduct = {
+        name: productName,
+        price: productPrice,
+        images: imageUrl,
+        colors: productColor,
+        clothingSizes: clothingSizes,
+        shoeSizes: shoeSizes,
+        tags: selectedTags // Store selected tags directly as a property
+      };
+
+      // Push the new product to Firebase database
+      const newProductRef = database.ref('products').push();
+      
+      newProductRef.set(newProduct)
+        .then(() => {
+          console.log("Product added successfully to Firebase!");
+          // Clear the form fields
+          productForm.reset();
+          document.getElementById('statusMessage').innerHTML = '<span style="color: green;">Product added successfully!</span>';
+        })
+        .catch((error) => {
+          console.error("Error adding product to Firebase:", error);
+          document.getElementById('statusMessage').innerHTML = '<span style="color: red;">Error adding product. Please try again!</span>';
+        });
     });
-  });
-  
- </script>
+  </script>
 </body>
 </html>
