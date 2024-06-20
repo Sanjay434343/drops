@@ -36,13 +36,18 @@
     input[type="text"],
     input[type="number"],
     input[type="url"],
-    select {
+    select,
+    textarea {
       width: calc(100% - 20px);
       padding: 10px;
       margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 16px;
+    }
+    
+    textarea {
+      height: 150px;
     }
     
     button[type="submit"] {
@@ -117,6 +122,9 @@
         <label for="productColor">Select Color:</label>
         <input type="text" id="productColor" placeholder="Enter color options"><br><br>
         
+        <label for="productDescription">Product Description:</label>
+        <textarea id="productDescription" placeholder="Enter product description"></textarea><br><br>
+        
         <label for="clothingSizes">Clothing Sizes:</label>
         <div id="clothingSizes" class="size-checkboxes">
           <label><input type="checkbox" value="XS"> XS</label>
@@ -127,7 +135,7 @@
           <label><input type="checkbox" value="XXL"> XXL</label>
         </div><br>
         
-        <label for="shoeSizes">Footware Sizes:</label>
+        <label for="shoeSizes">Shoe Sizes:</label>
         <div id="shoeSizes" class="size-checkboxes">
           <label><input type="checkbox" value="1"> 1</label>
           <label><input type="checkbox" value="2"> 2</label>
@@ -203,6 +211,9 @@
         }
       }
 
+      // Get product description
+      const productDescription = document.getElementById('productDescription').value;
+
       // Prepare the product object
       const newProduct = {
         name: productName,
@@ -211,7 +222,8 @@
         colors: productColor,
         clothingSizes: clothingSizes,
         shoeSizes: shoeSizes,
-        tags: selectedTags // Store selected tags directly as a property
+        tags: selectedTags,
+        description: productDescription // Add description to the product object
       };
 
       // Push the new product to Firebase database
