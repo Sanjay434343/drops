@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nanum+Myeongjo&family=Playwrite+NZ:wght@100..400&display=swap" rel="stylesheet">
     <style>
         /* Imported font and general reset */
         html {
             font-family: 'Lato', sans-serif;
         }
 
+        .body {
+            font-family: "Nanum Myeongjo", serif;
+            font-weight: 400;
+            font-style: normal;
+          }
+          
         img {
             max-width: 100%;
             display: block; /* Remove default inline spacing */
@@ -21,7 +30,6 @@
             margin: 100px auto;
             padding: 20px; /* Add padding inside wrapper */
             box-sizing: border-box; /* Ensure padding is included in total width */
-          
             border-radius: 8px; /* Rounded corners */
             overflow: hidden; /* Prevents content from overflowing */
         }
@@ -161,7 +169,6 @@
             .wrapper {
                 margin: 100px auto;
                 padding: 20px; /* Add padding for desktop */
-               
                 border-radius: 8px; /* Rounded corners */
             }
         }
@@ -184,6 +191,7 @@
                     <!-- Sizing list items will be dynamically populated here -->
                 </ul>
                 <a href="#" id="addToCartBtn" class="button">Add to Cart</a>
+                <a href="cart.html" class="button">View Cart</a>
             </div>
         </div>
     </div>
@@ -232,38 +240,42 @@
                         // Determine which sizes to use
                         const sizes = productData.clothingSizes ? productData.clothingSizes : productData.shoeSizes;
 
-                        // Update sizing list
-                        const sizingList = document.getElementById('sizingList');
-                        sizingList.innerHTML = ''; // Clear previous items
+                        if (sizes) {
+                            // Update sizing list
+                            const sizingList = document.getElementById('sizingList');
+                            sizingList.innerHTML = ''; // Clear previous items
 
-                        sizes.forEach(size => {
-                            const li = document.createElement('li');
-                            li.className = 'size';
-                            li.textContent = size;
-                            sizingList.appendChild(li);
-                        });
-
-                        // Add event listeners to sizing options
-                        const sizeItems = sizingList.querySelectorAll('.size');
-                        sizeItems.forEach(item => {
-                            item.addEventListener('click', () => {
-                                sizeItems.forEach(element => element.classList.remove('active'));
-                                item.classList.add('active');
+                            sizes.forEach(size => {
+                                const li = document.createElement('li');
+                                li.className = 'size';
+                                li.textContent = size;
+                                sizingList.appendChild(li);
                             });
-                        });
 
-                        // Update add to cart button click handler
-                        const addToCartBtn = document.getElementById('addToCartBtn');
-                        addToCartBtn.addEventListener('click', () => {
-                            const selectedSize = sizingList.querySelector('.size.active');
-                            if (selectedSize) {
-                                const size = selectedSize.textContent;
-                                addToCart(productId, size);
-                            } else {
-                                console.error('Please select a size.');
-                            }
-                        });
+                            // Add event listeners to sizing options
+                            const sizeItems = sizingList.querySelectorAll('.size');
+                            sizeItems.forEach(item => {
+                                item.addEventListener('click', () => {
+                                    sizeItems.forEach(element => element.classList.remove('active'));
+                                    item.classList.add('active');
+                                });
+                            });
 
+                            // Update add to cart button click
+                            const addToCartBtn = document.getElementById('addToCartBtn');
+                            addToCartBtn.addEventListener('click', () => {
+                                const selectedSize = sizingList.querySelector('.size.active');
+                                if (selectedSize) {
+                                   
+                                    const size = selectedSize.textContent;
+                                    addToCart(productId, size, productData);
+                                } else {
+                                    console.error('Please select a size.');
+                                }
+                            });
+                        } else {
+                            console.error('No sizes available for this product.');
+                        }
                     } else {
                         console.error('Product not found');
                     }
@@ -274,10 +286,24 @@
         }
 
         // Function to add item to cart
-        function addToCart(productId, size) {
-            // Example logic to add product to cart
-            // Replace with your own implementation (e.g., saving to Firebase cart collection)
-            alert(`Added product ${productId} - Size: ${size} to cart.`);
+        function addToCart(productId, size, productData) {
+            // Generate a unique ID for the cart item
+            const cartItemId = `cart_${productId}_${size}`;
+
+            // Add item to the cart in Firebase database
+            database.ref(`cart/${cartItemId}`).set({
+                productId: productId,
+                name: productData.name,
+                description: productData.description,
+                image: images[0],
+                size: size,
+                price: productData.price,
+                quantity: 1
+            }).then(() => {
+                alert(`Added product ${productData.name} - Size: ${size} to cart.`);
+            }).catch((error) => {
+                console.error('Error adding to cart:', error);
+            });
         }
 
         // Call the function to get and display product details
