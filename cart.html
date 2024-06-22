@@ -213,7 +213,7 @@
                         <p>Quantity: ${item.quantity}</p>
                         <p>Price: ₹${item.price}</p>
                     </div>
-                    <button class="cart-item-remove btn btn-danger" onclick="removeCartItem('${item.productId}', '${sizeText}')">
+                    <button class="cart-item-remove btn btn-danger" onclick="removeCartItem('${item.productId}')">
                         <span class="material-icons">delete</span>
                     </button>
                 `;
@@ -238,7 +238,6 @@
             // Update the displayed cart items and total
             displayCartItems();
         }
-        
 
         function emptyCart() {
             // Clear the cart in localStorage
@@ -248,6 +247,7 @@
         }
 
         function proceedToCheckout() {
+            // Redirect to checkout.html
             window.location.href = 'checkout.html';
         }
     </script>
