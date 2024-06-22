@@ -24,7 +24,7 @@
             padding: 20px;
             max-width: 800px;
             box-sizing: border-box;
-            background-color: #fff;
+            background-color: #ffffff70;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             overflow: hidden;
@@ -145,7 +145,7 @@
             padding: 12px 25px;
             font-size: 16px;
             text-align: center;
-            background-color: #4CAF50;
+            background-color: #cacbca;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -155,6 +155,8 @@
 
         .checkout-button:hover {
             background-color: #45a049;
+            border: 3px solid #6b7e70;
+            font-weight: bold;
         }
 
         @media (min-width: 768px) {
@@ -171,6 +173,21 @@
                 font-size: 24px;
             }
         }
+
+        .btns{
+            background-color: #fcc8c8;
+            border: none;
+            font-size: 20px;
+            font-weight: 500;
+            padding: 8px 10px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .btns:hover{
+            background-color: #ff0000;
+            border: 3px solid #fd8680;
+        }
     </style>
 </head>
 <body>
@@ -182,7 +199,7 @@
         <div class="cart-total">
             Total: <span id="cartTotal">$0.00</span>
             <button class="checkout-button btn btn-success mt-3" onclick="proceedToCheckout()">Proceed to Checkout</button>
-            <button class="btn btn-danger mt-3 ml-3" onclick="emptyCart()">Empty Cart</button>
+            <button class="btns  mt-3 ml-3" onclick="emptyCart()">Empty Cart</button>
         </div>
     </div>
 
@@ -247,8 +264,10 @@
         }
 
         function proceedToCheckout() {
-            // Redirect to checkout.html
-            window.location.href = 'checkout.html';
+            // Redirect to checkout.html with cart details in URL parameters
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cartDetails = encodeURIComponent(JSON.stringify(cart));
+            window.location.href = `checkout.html?cart=${cartDetails}`;
         }
     </script>
 </body>
