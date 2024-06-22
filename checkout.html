@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .checkout-item img {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .checkout-item-details {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .checkout-item-details h3 {
+            margin: 5px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .checkout-item-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .checkout-total {
+            text-align: right;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .checkout-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            text-align: center;
+            background-color: #505050;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-button:hover {
+            background-color: #323232;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Checkout</h1>
+        <div id="checkoutItems">
+            <!-- Checkout items will be dynamically populated here -->
+        </div>
+        <div class="checkout-total">
+            Total: <span id="checkoutTotal">$0.00</span>
+        </div>
+        <button class="checkout-button" onclick="completeCheckout()">Complete Checkout</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            displayCheckoutItems();
+        });
+
+        function displayCheckoutItems() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const checkoutItemsContainer = document.getElementById('checkoutItems');
+            checkoutItemsContainer.innerHTML = '';
+
+            let total = 0;
+
+            cart.forEach(item => {
+                const sizeText = item.size ? item.size : 'None';
+                const colorText = item.color ? item.color : 'None';
+
+                const checkoutItemElement = document.createElement('div');
+                checkoutItemElement.className = 'checkout-item';
+                checkoutItemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="checkout-item-details">
+                        <h3>${item.name}</h3>
+                        <p>Size: ${sizeText}</p>
+                        <p>Color: ${colorText}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                        <p>Price: ₹${item.price}</p>
+                    </div>
+                `;
+
+                checkoutItemsContainer.appendChild(checkoutItemElement);
+
+                total += parseFloat(item.price) * item.quantity;
+            });
+
+            document.getElementById('checkoutTotal').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        function completeCheckout() {
+            // Here you would typically handle the checkout process, e.g., sending data to the server
+            alert('Checkout completed successfully!');
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html'; // Redirect to a confirmation or home page
+        }
+    </script>
+</body>
+</html>

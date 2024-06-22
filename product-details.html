@@ -102,6 +102,23 @@
             background-color: rgb(194, 194, 194);
         }
 
+        /* Quantity input styling */
+        .quantity {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .quantity input {
+            width: 50px;
+            padding: 5px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 10px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+        }
+
         /* Button styling */
         .button {
             display: inline-block;
@@ -181,6 +198,9 @@
                 <ul id="sizingList" class="sizing-list">
                     <!-- Sizing list items will be dynamically populated here -->
                 </ul>
+                <div class="quantity">
+                    <input type="number" id="quantityInput" value="1" min="1">
+                </div>
                 <a href="#" id="addToCartBtn" class="button">Add to Cart</a>
             </div>
         </div>
@@ -189,7 +209,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
     <script>
-        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
             authDomain: "dropshipping-98eb5.firebaseapp.com",
@@ -201,18 +220,15 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-
-        // Reference to your Firebase database
         const database = firebase.database();
 
         let currentImageIndex = 0;
         let images = [];
         let productId = null;
 
-        // Function to get product details based on productId from URL query parameter
         function getProductDetails() {
             const params = new URLSearchParams(window.location.search);
-            productId = params.get('productId');
+            const productId = params.get('productId');
 
             if (productId) {
                 const productRef = database.ref(`products/${productId}`);
@@ -220,51 +236,15 @@
                     const productData = snapshot.val();
 
                     if (productData) {
-                        images = productData.images;
-                        const productImage = document.getElementById('productImage');
-                        productImage.src = images[currentImageIndex];
-                        productImage.alt = productData.name;
-                        document.getElementById('productName').textContent = productData.name;
-                        document.getElementById('productDescription').textContent = productData.description;
+                        displayProductDetails(productData);
 
-                        // Determine which sizes to use
-                        const sizes = productData.clothingSizes ? productData.clothingSizes : productData.shoeSizes;
-
-                        if (sizes) {
-                            // Update sizing list
-                            const sizingList = document.getElementById('sizingList');
-                            sizingList.innerHTML = ''; // Clear previous items
-
-                            sizes.forEach(size => {
-                                const li = document.createElement('li');
-                                li.className = 'size';
-                                li.textContent = size;
-                                sizingList.appendChild(li);
-                            });
-
-                            // Add event listeners to sizing options
-                            const sizeItems = sizingList.querySelectorAll('.size');
-                            sizeItems.forEach(item => {
-                                item.addEventListener('click', () => {
-                                    sizeItems.forEach(element => element.classList.remove('active'));
-                                    item.classList.add('active');
-                                });
-                            });
-
-                            // Update add to cart button click handler
-                            const addToCartBtn = document.getElementById('addToCartBtn');
-                            addToCartBtn.addEventListener('click', () => {
-                                const selectedSize = sizingList.querySelector('.size.active');
-                                if (selectedSize) {
-                                    const size = selectedSize.textContent;
-                                    addToCart(productId, size, productData);
-                                } else {
-                                    console.error('Please select a size.');
-                                }
-                            });
-                        } else {
-                            console.error('No sizes available for this product.');
-                        }
+                        const addToCartBtn = document.getElementById('addToCartBtn');
+                        addToCartBtn.addEventListener('click', () => {
+                            const selectedSize = document.querySelector('.size.active');
+                            const size = selectedSize ? selectedSize.textContent : '';
+                            const quantity = parseInt(document.getElementById('quantityInput').value) || 1;
+                            addToCart(productId, size, productData, quantity);
+                        });
                     } else {
                         console.error('Product not found');
                     }
@@ -274,29 +254,67 @@
             }
         }
 
-        // Call the function to get and display product details
-        getProductDetails();
+        function displayProductDetails(productData) {
+            const productImage = document.getElementById('productImage');
+            productImage.src = productData.images[0];
+            productImage.alt = productData.name;
 
-        // Function to add item to cart
-        function addToCart(productId, size, productData) {
-            // Construct the cart item object
-            const cartItem = {
+            document.getElementById('productName').textContent = productData.name;
+            document.getElementById('productDescription').textContent = productData.description;
+
+            const sizingList = document.getElementById('sizingList');
+            sizingList.innerHTML = '';
+
+            const sizes = productData.clothingSizes || productData.shoeSizes || ['One Size'];
+
+            sizes.forEach(size => {
+                const li = document.createElement('li');
+                li.className = 'size';
+                li.textContent = size;
+                sizingList.appendChild(li);
+            });
+
+            const sizeItems = sizingList.querySelectorAll('.size');
+            sizeItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    sizeItems.forEach(element => element.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+        }
+
+        function addToCart(productId, size, productData, quantity) {
+            if (!size || size.trim() === '') {
+                alert('Please select a size before adding to cart.');
+                return;
+            }
+
+            let cartItem = {
                 productId: productId,
                 name: productData.name,
-                image: productData.images[0], // Assuming first image as default
+                image: productData.images[0],
                 description: productData.description,
+                price: productData.price || 'N/A',
+                color: productData.colors ? productData.colors[0] : 'N/A',
                 size: size,
-                price: productData.price || 'N/A', // Replace with actual price if available
-                color: productData.color || 'N/A' // Replace with actual color if available
+                quantity: quantity
             };
 
-            // Example logic to add product to cart in Firebase or local storage
-            // For simplicity, let's simulate adding to cart with an alert
-            alert(`Added to cart:\n${cartItem.name} - Size: ${cartItem.size}`);
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(cartItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
 
-            // Optionally, you can redirect to the cart page after adding
-            // window.location.href = 'cart.html'; // Uncomment this line to redirect to cart page
+            let alertMessage = `Added to cart:\n${cartItem.name} - Size: ${cartItem.size} - Quantity: ${cartItem.quantity}`;
+            alert(alertMessage);
+
+            if (productData.addToWallet) {
+                window.location.href = 'wallet.html';
+            } else {
+                window.location.href = 'cart.html';
+            }
         }
+
+        getProductDetails();
     </script>
 </body>
 </html>
