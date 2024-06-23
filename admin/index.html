@@ -3,83 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Buttons</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
-        /* General styling for the page */
-        body {
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: #343a40;
+            padding: 10px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0; /* Background color for the page */
-            margin: 0;
-            font-family: Arial, sans-serif;
         }
-
-        /* Container styling */
-        .button-container {
-            background-color: #ffffff; /* Background color for the container */
-            border-radius: 8px; /* Rounded corners for the container */
-            padding: 20px; /* Padding inside the container */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for the container */
-            width: 300px; /* Width of the container */
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
-        /* Button pair styling */
-        .button-pair {
-            display: flex;
-            justify-content: space-between; /* Spread buttons evenly */
-            margin-bottom: 20px;
-        }
-
-        /* Basic styling for buttons */
-        .button {
-            background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 100%);
-            position: relative;
-            padding: 5px; /* Adjust padding to reduce button size */
-            display: inline-block;
-            border-radius: 7px;
-        }
-
-        .button span {
-            display: inline-block;
-            background: #191919;
-            color: white;
-            text-transform: uppercase;
-            padding: 0.8rem 1.6rem; /* Adjust padding to reduce text size */
+        .navbar button {
+            background-color: #495057;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin: 0 10px;
+            cursor: pointer;
             border-radius: 5px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            font-weight: 800;
-            font-size: 10px; /* Adjust font size */
-        }
-
-        html, body {
-            height: 100%;
+            transition: background-color 0.3s, width 0.3s;
+            display: flex;
+            align-items: center;
             overflow: hidden;
+            width: 40px; /* Initial width to show only the icon */
+        }
+        .navbar button:hover {
+            background-color: #ffc107;
+            width: 150px; /* Expanded width to show icon and name */
+        }
+        .navbar .material-icons {
+            margin-right: 10px;
+            transition: margin 0.3s;
+        }
+        .navbar button span {
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .navbar button:hover span {
+            opacity: 1;
+        }
+        .iframe-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            width: 100%;
+        }
+        .iframe-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 400%; /* Adjust according to the number of iframes */
+            height: 100%;
+        }
+        iframe {
+            width: 100vw; /* Full viewport width */
+            height: 100vh; /* Full viewport height */
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div class="button-container">
-        <div class="button-pair">
-            <a href="main.html" class="button">
-                <span>Add product</span>
-            </a>
-            <a href="products.html" class="button">
-                <span>Edit Product</span>
-                
-            </a>
-            
-            <a href="order  s.html" class="button">
-                <span>orders</span>
-            </a>
+    <div class="navbar">
+        <button onclick="navigateTo(0)">
+            <i class="material-icons">home</i>
+            <span>Main</span>
+        </button>
+        <button onclick="navigateTo(1)">
+            <i class="material-icons">shopping_cart</i>
+            <span>Products</span>
+        </button>
+        <button onclick="navigateTo(2)">
+            <i class="material-icons">receipt</i>
+            <span>Orders</span>
+        </button>
+        <button onclick="navigateTo(3)">
+            <i class="material-icons">category</i>
+            <span>Add Category</span>
+        </button>
+    </div>
+    <div class="iframe-container">
+        <div class="iframe-wrapper" id="iframeWrapper">
+            <iframe src="main.html"></iframe>
+            <iframe src="products.html"></iframe>
+            <iframe src="orders.html"></iframe>
+            <iframe src="category-adder.html"></iframe><br><br>
         </div>
-        
     </div>
 
-    <script src="scripts.js"></script>
+    <!-- Optional: Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function navigateTo(index) {
+            const iframeWrapper = document.getElementById('iframeWrapper');
+            iframeWrapper.style.transform = `translateX(-${index * 100}vw)`;
+        }
+    </script>
 </body>
 </html>

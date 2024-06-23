@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Manager</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+        }
+        .category-list {
+            margin-top: 30px;
+        }
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Category Manager</h1>
+        <form id="categoryForm">
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" placeholder="Enter category name" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+        <div class="category-list" id="categoryList">
+            <!-- List of categories will be populated here -->
+        </div>
+    </div>
+
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
+            authDomain: "dropshipping-98eb5.firebaseapp.com",
+            projectId: "dropshipping-98eb5",
+            storageBucket: "dropshipping-98eb5.appspot.com",
+            messagingSenderId: "904925867242",
+            appId: "1:904925867242:web:af0abda866826e92f8fb93",
+            measurementId: "G-BVZR8HY1SR"   
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
+    <!-- Custom JS -->
+    <script>
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const categoryName = document.getElementById('categoryName').value;
+
+            if (categoryName) {
+                const newCategoryKey = database.ref().child('categories').push().key;
+
+                database.ref('categories/' + newCategoryKey).set({
+                    name: categoryName
+                }, (error) => {
+                    if (error) {
+                        alert('Error adding category: ' + error.message);
+                    } else {
+                        alert('Category added successfully!');
+                        document.getElementById('categoryForm').reset();
+                        fetchCategories();
+                    }
+                });
+            } else {
+                alert('Please enter a category name.');
+            }
+        });
+
+        function fetchCategories() {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '';
+
+            database.ref('categories').once('value', (snapshot) => {
+                const categories = snapshot.val();
+                if (categories) {
+                    Object.keys(categories).forEach(key => {
+                        const categoryItem = document.createElement('div');
+                        categoryItem.className = 'category-item';
+                        categoryItem.innerHTML = `
+                            <span>${categories[key].name}</span>
+                            <div>
+                                <button class="btn btn-sm btn-warning" onclick="editCategory('${key}', '${categories[key].name}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCategory('${key}')">Delete</button>
+                            </div>
+                        `;
+                        categoryList.appendChild(categoryItem);
+                    });
+                }
+            });
+        }
+
+        function deleteCategory(key) {
+            if (confirm('Are you sure you want to delete this category?')) {
+                database.ref('categories/' + key).remove((error) => {
+                    if (error) {
+                        alert('Error deleting category: ' + error.message);
+                    } else {
+                        alert('Category deleted successfully!');
+                        fetchCategories();
+                    }
+                });
+            }
+        }
+
+        function editCategory(key, currentName) {
+            const newName = prompt('Enter new category name:', currentName);
+            if (newName && newName !== currentName) {
+                database.ref('categories/' + key).update({ name: newName }, (error) => {
+                    if (error) {
+                        alert('Error updating category: ' + error.message);
+                    } else {
+                        alert('Category updated successfully!');
+                        fetchCategories();
+                    }
+                });
+            }
+        }
+
+        // Fetch categories on page load
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+</html>
