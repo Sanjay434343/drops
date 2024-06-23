@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            width: 80%;
+            max-width: 800px;
+            animation: slideInLeft 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analytics Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Orders</h5>
+                        <p class="card-text" id="totalOrders">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Products</h5>
+                        <p class="card-text" id="totalProducts">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Categories</h5>
+                        <p class="card-text" id="totalCategories">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Orders Chart</h2>
+        <div class="chart-container">
+            <canvas id="ordersChart"></canvas>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Products Chart</h2>
+        <div class="chart-container">
+            <canvas id="productsChart"></canvas>
+        </div>
+    </div>
+<br><br><br>    
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
+            authDomain: "dropshipping-98eb5.firebaseapp.com",
+            projectId: "dropshipping-98eb5",
+            storageBucket: "dropshipping-98eb5.appspot.com",
+            messagingSenderId: "904925867242",
+            appId: "1:904925867242:web:af0abda866826e92f8fb93",
+            measurementId: "G-BVZR8HY1SR"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchTotalOrders();
+            fetchTotalProducts();
+            fetchTotalCategories();
+            renderOrdersChart();
+            renderProductsChart();
+        });
+
+        function fetchTotalOrders() {
+            database.ref('orders').once('value', (snapshot) => {
+                const totalOrders = snapshot.numChildren();
+                document.getElementById('totalOrders').textContent = totalOrders;
+            });
+        }
+
+        function fetchTotalProducts() {
+            database.ref('products').once('value', (snapshot) => {
+                const totalProducts = snapshot.numChildren();
+                document.getElementById('totalProducts').textContent = totalProducts;
+            });
+        }
+
+        function fetchTotalCategories() {
+            database.ref('categories').once('value', (snapshot) => {
+                const totalCategories = snapshot.numChildren();
+                document.getElementById('totalCategories').textContent = totalCategories;
+            });
+        }
+
+        function renderOrdersChart() {
+            const ordersCanvas = document.getElementById('ordersChart').getContext('2d');
+
+            database.ref('orders').once('value', (snapshot) => {
+                const ordersData = [];
+                const orderLabels = [];
+
+                snapshot.forEach((childSnapshot) => {
+                    const order = childSnapshot.val();
+                    ordersData.push(order.amount); // Assuming there's an 'amount' field in each order
+                    orderLabels.push(childSnapshot.key); // Use order keys as labels
+                });
+
+                new Chart(ordersCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: orderLabels,
+                        datasets: [{
+                            label: 'Order Amount',
+                            data: ordersData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        }
+
+        function renderProductsChart() {
+            const productsCanvas = document.getElementById('productsChart').getContext('2d');
+
+            database.ref('products').once('value', (snapshot) => {
+                const productsData = [];
+                const productLabels = [];
+
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    // Adjust data fields according to your product structure
+                    productsData.push(product.price); // Example: Assuming 'price' field exists
+                    productLabels.push(product.name); // Example: Assuming 'name' field exists
+                });
+
+                new Chart(productsCanvas, {
+                    type: 'pie',
+                    data: {
+                        labels: productLabels,
+                        datasets: [{
+                            label: 'Product Prices',
+                            data: productsData,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(54, 162, 235, 0.6)',
+                                'rgba(255, 206, 86, 0.6)',
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(153, 102, 255, 0.6)',
+                                'rgba(255, 159, 64, 0.6)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

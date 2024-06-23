@@ -36,10 +36,7 @@
             overflow: hidden;
             width: 40px; /* Initial width to show only the icon */
         }
-        .navbar button:hover {
-            background-color: #07ff62;
-            width: 150px; /* Expanded width to show icon and name */
-        }
+        
         .navbar .material-icons {
             margin-right: 10px;
             transition: margin 0.3s;
@@ -58,51 +55,54 @@
             overflow: hidden;
             position: relative;
             display: flex;
-            width: 100%;
-            margin-bottom:  0px;
-
+            width: 200%;
         }
         .iframe-wrapper {
             display: flex;
             transition: transform 0.5s ease;
             width: 400%; /* Adjust according to the number of iframes */
             height: 100%;
-            margin-bottom: 100px;
-
         }
         iframe {
             width: 100vw; /* Full viewport width */
             height: 100vh; /* Full viewport height */
             border: none;
-
         }
     </style>
 </head>
 <body>
     <div class="navbar">
         <button onclick="navigateTo(0)">
+            <i class="material-icons">analytics</i>
+            <span>Analytics</span>
+        </button>
+
+        <button onclick="navigateTo(1)">
             <i class="material-icons">home</i>
             <span>Main</span>
         </button>
-        <button onclick="navigateTo(1)">
+        <button onclick="navigateTo(2)">
             <i class="material-icons">shopping_cart</i>
             <span>Products</span>
         </button>
-        <button onclick="navigateTo(2)">
+        <button onclick="navigateTo(3)">
             <i class="material-icons">receipt</i>
             <span>Orders</span>
         </button>
-        <button onclick="navigateTo(3)">
+        <button onclick="navigateTo(4)">
             <i class="material-icons">category</i>
             <span>Add Category</span>
         </button>
+       
     </div>
     <div class="iframe-container">
         <div class="iframe-wrapper" id="iframeWrapper">
+            <iframe src="analytical-page.html"></iframe><br>
             <iframe src="main.html"></iframe>
             <iframe src="products.html"></iframe>
             <iframe src="orders.html"></iframe>
-            <iframe src="category-adder.html"></iframe><br><br>
+            <iframe src="category-adder.html"></iframe><br>
+            
         </div>
     </div>
 
