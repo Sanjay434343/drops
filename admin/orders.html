@@ -36,11 +36,6 @@
         #ordersContainer{
             margin-bottom: 100px;
         }
-        .order-status-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -48,7 +43,7 @@
         <h1>Orders</h1>
         <div id="ordersContainer"></div>
     </div>
-
+<br><br><br><br>br
     <!-- jQuery (required by Bootstrap) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -63,12 +58,12 @@
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
-  authDomain: "dropshipping-98eb5.firebaseapp.com",
-  projectId: "dropshipping-98eb5",
-  storageBucket: "dropshipping-98eb5.appspot.com",
-  messagingSenderId: "904925867242",
-  appId: "1:904925867242:web:af0abda866826e92f8fb93",
-  measurementId: "G-BVZR8HY1SR"
+            authDomain: "dropshipping-98eb5.firebaseapp.com",
+            projectId: "dropshipping-98eb5",
+            storageBucket: "dropshipping-98eb5.appspot.com",
+            messagingSenderId: "904925867242",
+            appId: "1:904925867242:web:af0abda866826e92f8fb93",
+            measurementId: "G-BVZR8HY1SR"   
         };
 
         // Initialize Firebase
@@ -80,7 +75,6 @@
     <script>
         // Function to fetch orders and display them
       // Function to fetch orders and display them
-// Function to fetch orders and display them
 function fetchOrdersAndDisplay() {
     const ordersRef = database.ref('orders');
 
@@ -102,7 +96,7 @@ function fetchOrdersAndDisplay() {
 
                     // Display order ID and total price (if available)
                     const orderInfo = document.createElement('p');
-                    orderInfo.textContent = `Order ID: ${orderId}`;
+                  
                     orderElement.appendChild(orderInfo);
 
                     // Display product details (if available)
@@ -138,37 +132,6 @@ function fetchOrdersAndDisplay() {
                         }
                         orderElement.appendChild(detailsList);
 
-                        // Create buttons to indicate order status
-                        const statusButtonsContainer = document.createElement('div');
-                        statusButtonsContainer.classList.add('order-status-buttons');
-
-                        // Define the status buttons
-                        const statusButtons = [
-                            { text: 'Ordered', colorClass: 'btn-info' },
-                            { text: 'Packing', colorClass: 'btn-warning' },
-                            { text: 'Shipping', colorClass: 'btn-primary' },
-                            { text: 'Out for Delivery', colorClass: 'btn-secondary' },
-                            { text: 'Delivered', colorClass: 'btn-success' }
-                        ];
-
-                        // Create buttons dynamically
-                        statusButtons.forEach((status) => {
-                            const statusButton = document.createElement('button');
-                            statusButton.textContent = status.text;
-                            statusButton.classList.add('btn', status.colorClass);
-                            statusButton.addEventListener('click', () => {
-                                updateOrderStatus(orderId, status.text); // Update order status in Firebase
-                            });
-                            statusButtonsContainer.appendChild(statusButton);
-
-                            // Check if current order's status matches the button text and update button if needed
-                            if (orderData.status === status.text) {
-                                statusButton.classList.add('active'); // Add active class for styling
-                            }
-                        });
-
-                        orderElement.appendChild(statusButtonsContainer);
-
                         // Create button to view address details
                         const viewAddressBtn = document.createElement('button');
                         viewAddressBtn.textContent = 'View Address';
@@ -195,19 +158,6 @@ function fetchOrdersAndDisplay() {
     });
 }
 
-// Function to update order status in Firebase
-function updateOrderStatus(orderId, newStatus) {
-    const orderRef = database.ref('orders').child(orderId);
-    orderRef.update({
-        status: newStatus
-    }).then(() => {
-        console.log(`Order status updated successfully to ${newStatus}`);
-        // Optionally update UI to reflect the new status
-    }).catch((error) => {
-        console.error('Error updating order status:', error);
-    });
-}
-
 // Function to open modal with address details
 function openAddressModal(addressDetails) {
     const modalBody = document.getElementById('addressModalBody');
@@ -222,7 +172,7 @@ function openAddressModal(addressDetails) {
             modalBody.appendChild(detailElement);
         });
 
-        // Show the modal using Bootstrap's modal function
+        // Show the modal
         $('#addressModal').modal('show');
     } else {
         console.error('Modal body element not found.');
@@ -232,23 +182,46 @@ function openAddressModal(addressDetails) {
 // Call fetchOrdersAndDisplay when the page loads
 document.addEventListener('DOMContentLoaded', fetchOrdersAndDisplay);
 
-</script>
+        // Function to open modal with address details
+        function openAddressModal(addressDetails) {
+            const modalBody = document.getElementById('addressModalBody');
+            if (modalBody) {
+                modalBody.innerHTML = ''; // Clear previous content
 
-<!-- Modal for address details -->
-<div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addressModalLabel">Address Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="addressModalBody">
-                <!-- Address details will be dynamically added here -->
+                // Create elements to display address details
+                const addressKeys = Object.keys(addressDetails);
+                addressKeys.forEach(key => {
+                    const detailElement = document.createElement('p');
+                    detailElement.textContent = `${key}: ${addressDetails[key]}`;
+                    modalBody.appendChild(detailElement);
+                });
+
+                // Show the modal using Bootstrap's modal function
+                $('#addressModal').modal('show');
+            } else {
+                console.error('Modal body element not found.');
+            }
+        }
+
+        // Call fetchOrdersAndDisplay when the page loads
+        document.addEventListener('DOMContentLoaded', fetchOrdersAndDisplay);
+    </script>
+
+    <!-- Modal for address details -->
+    <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressModalLabel">Address Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="addressModalBody">
+                    <!-- Address details will be dynamically added here -->
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
