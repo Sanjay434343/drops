@@ -110,21 +110,20 @@
         <label for="productPrice">Product Price:</label>
         <input type="number" id="productPrice" required><br><br>
         
-        <label for="tagSelect">Select Tag:</label>
-        <select id="tagSelect" multiple>
-            <option value="sale">Sale</option>
-            <option value="out-of-stock">Out of Stock</option>
-            <option value="new">New</option>
-        </select><br><br>
+        <label for="productDescription">Product Description:</label>
+        <textarea id="productDescription" placeholder="Enter product description"></textarea><br><br>
         
+        <label for="productTags">Tags (Separate with commas):</label>
+        <input type="text" id="productTags" placeholder="Enter tags"><br><br>
+
         <label for="imageUrl">Image URLs (Separate with commas):</label>
         <input type="text" id="imageUrl" placeholder="Enter image URLs"><br><br>
         
         <label for="productColor">Add Color (Separate with commas):</label>
         <input type="text" id="productColor" placeholder="Enter colors"><br><br>
         
-        <label for="productDescription">Product Description:</label>
-        <textarea id="productDescription" placeholder="Enter product description"></textarea><br><br>
+        <label for="searchTags">Search Tags (Separate with commas):</label>
+        <input type="text" id="searchTags" placeholder="Enter search tags"><br><br>
         
         <label for="clothingSizes">Clothing Sizes:</label>
         <div id="clothingSizes" class="size-checkboxes">
@@ -152,8 +151,7 @@
         </div><br>
         
         <!-- New Field: Tags -->
-        <label for="productTags">Tags (Separate with commas):</label>
-        <input type="text" id="productTags" placeholder="Enter tags"><br><br>
+      
         
         <!-- Select category from Firebase -->
         <label for="categorySelect">Select Category:</label>
@@ -202,7 +200,7 @@
           Object.keys(categories).forEach(key => {
             const category = categories[key];
             const option = document.createElement('option');
-            option.value = key;
+            option.value = category.name; // Use category name instead of ID
             option.textContent = category.name;
             categorySelect.appendChild(option);
           });
@@ -224,6 +222,7 @@
       const imageUrl = document.getElementById('imageUrl').value.split(',');
       const productColor = document.getElementById('productColor').value.split(',').map(color => color.trim());
       const productTags = document.getElementById('productTags').value.split(',').map(tag => tag.trim());
+      const searchTags = document.getElementById('searchTags').value.split(',').map(tag => tag.trim());
 
       // Get selected clothing sizes
       const clothingSizesCheckboxes = document.querySelectorAll('#clothingSizes input[type="checkbox"]:checked');
@@ -236,15 +235,15 @@
       const shoeSizesCheckboxes = document.querySelectorAll('#shoeSizes input[type="checkbox"]:checked');
       let shoeSizes = [];
       shoeSizesCheckboxes.forEach(checkbox => {
-        shoeSizes.push(checkbox.value);
+        shoeSizes.push(checkbox.value); 
       });
 
       // Get product description
       const productDescription = document.getElementById('productDescription').value;
 
-      // Get selected category
+      // Get selected category text
       const categorySelect = document.getElementById('categorySelect');
-      const selectedCategory = categorySelect.value;
+      const selectedCategory = categorySelect.options[categorySelect.selectedIndex].text;
 
       // Prepare the product object
       const newProduct = {
@@ -255,8 +254,9 @@
         clothingSizes: clothingSizes,
         shoeSizes: shoeSizes,
         tags: productTags,
+        searchTags: searchTags, // Add search tags to the product object
         description: productDescription,
-        category: selectedCategory // Add category to the product object
+        category: selectedCategory // Use category text instead of ID
       };
 
       // Push the new product to Firebase database

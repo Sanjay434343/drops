@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eCommerce Home Screen</title>
+    <title>Drops</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -21,6 +21,7 @@
             transition: background-color 0.3s ease; /* Smooth transition for background color */
             margin-top: 8px; /* Space above the button */
             width: 100%; /* Make button full width */
+            border-radius: 10px;
         }
 
         .buy-now-button:hover {
@@ -48,8 +49,8 @@
 
         .tag {
             display: inline-block;
-            background-color: #f0f0f0;
-            color: #333;
+            background-color: #ff0303;
+            color: #fcfcfc;
             padding: 5px 10px;
             margin-right: 5px;
             border-radius: 3px;
@@ -122,16 +123,42 @@
             border-color: #333; /* Border color when selected */
         }
 
+        /* Search and Filter Section */
+        .search-filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-item .size-list li {
                 font-size: 12px; /* Adjust font size for smaller screens */
             }
-        }
-        .material-symbols-outlined{
-width: 0;
-height: 0;
-margin: 0px 0px 0px 0px;
+
+            .search-filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input, .filter-select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -139,12 +166,9 @@ margin: 0px 0px 0px 0px;
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-md navbar-light bg-white">
         <div class="container-fluid">
-            <a href="index.html"><span class="material-symbols-outlined">
-                water_drop
-                </span></a>
+            <a href="index.html"><span class="material-symbols-outlined">water_drop</span></a>
             <a class="navbar-brand text-uppercase fw-bold" href="#" style="margin-left: 50px; margin-bottom:5px; font-size:30px;">Drops</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -163,29 +187,36 @@ margin: 0px 0px 0px 0px;
         </div>
     </nav>
 
-    <!-- Product Container -->
     <div class="container mt-4">
+        <!-- Search and Filter Section -->
+        <div class="search-filter-container">
+            <input type="text" class="search-input" placeholder="Search products...">
+            <select class="filter-select" id="filterBy">
+                <option value="all">All</option>
+                <option value="price_low_to_high">Price: Low to High</option>
+                <option value="price_high_to_low">Price: High to Low</option>
+            </select>
+        </div>
+        
+        <!-- Product Cards Section -->
         <div class="row" id="productContainer">
             <!-- Product cards will be dynamically added here -->
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Firebase JavaScript SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
-    <!-- Your Custom JavaScript -->
     <script>
         // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
-  authDomain: "dropshipping-98eb5.firebaseapp.com",
-  projectId: "dropshipping-98eb5",
-  storageBucket: "dropshipping-98eb5.appspot.com",
-  messagingSenderId: "904925867242",
-  appId: "1:904925867242:web:af0abda866826e92f8fb93",
-  measurementId: "G-BVZR8HY1SR"
+            authDomain: "dropshipping-98eb5.firebaseapp.com",
+            projectId: "dropshipping-98eb5",
+            storageBucket: "dropshipping-98eb5.appspot.com",
+            messagingSenderId: "904925867242",
+            appId: "1:904925867242:web:af0abda866826e92f8fb93",
+            measurementId: "G-BVZR8HY1SR"
         };
         firebase.initializeApp(firebaseConfig);
 
@@ -195,129 +226,179 @@ margin: 0px 0px 0px 0px;
         // Reference to the container where products will be displayed
         const productContainer = document.getElementById('productContainer');
 
+        // Reference to search input and filter select
+        const searchInput = document.querySelector('.search-input');
+        const filterSelect = document.getElementById('filterBy');
+
         // Function to fetch and display products from Firebase
         function displayProducts() {
+            // Clear existing products to avoid duplicates
+            productContainer.innerHTML = '';
+
             database.ref('products').once('value', (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
                     const productData = childSnapshot.val();
                     const productId = childSnapshot.key;
-
+    
                     // Create product card element
                     const productCard = document.createElement('div');
                     productCard.classList.add('col-lg-3', 'col-sm-6', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-center', 'product-item', 'my-3');
-
+    
+                    // Set data attributes for searchTags and category
+                    productCard.setAttribute('data-search-tags', productData.searchTags ? productData.searchTags.join(',').toLowerCase() : '');
+                    productCard.setAttribute('data-category', productData.category ? productData.category.toLowerCase() : '');
+    
                     // Product images
-                    const images = productData.images; // Assuming 'images' is an array of image URLs
+                    const images = productData.images;
                     if (images && images.length > 0) {
                         const productImage = document.createElement('img');
-                        productImage.src = images[0]; // Display the first image for simplicity
+                        productImage.src = images[0];
                         productImage.alt = productData.name;
                         productCard.appendChild(productImage);
                     }
-
+    
                     // Title (Product Name)
                     const title = document.createElement('div');
                     title.classList.add('title');
                     title.textContent = productData.name;
                     productCard.appendChild(title);
-
+    
                     // Price
                     const price = document.createElement('div');
                     price.classList.add('price');
                     price.textContent = '₹ ' + productData.price;
                     productCard.appendChild(price);
+    
+                    // Check if colors exist
+                    if (productData.colors && productData.colors.length > 0) {
+                        const colorLabel = document.createElement('div');
+                        colorLabel.classList.add('color-label');
+                        colorLabel.textContent = 'Available Colors:';
+                        productCard.appendChild(colorLabel);
+    
+                        const colorContainer = document.createElement('div');
+                        colorContainer.classList.add('color-radio'); 
+    
+                        productData.colors.forEach(color => {
+                            const colorRadio = document.createElement('input');
+                            colorRadio.type = 'radio';
+                            colorRadio.name = `${productId}-color`;
+                            colorRadio.value = color;
+                            colorRadio.id = `${productId}-${color}`;
+    
+                            const colorLabel = document.createElement('label');
+                            colorLabel.setAttribute('for', `${productId}-${color}`);
+                            colorLabel.style.backgroundColor = color;
+                            colorContainer.appendChild(colorRadio);
+                            colorContainer.appendChild(colorLabel);
+                        });
+    
+                        productCard.appendChild(colorContainer);
+                    } else {
+                        const naLabel = document.createElement('div');
+                        naLabel.textContent = 'Not Applicable';
+                        productCard.appendChild(naLabel);
+                    }
+    
+                    // Buy Now button
+                    const buyNowButton = createBuyNowButton(productId);
+                    productCard.appendChild(buyNowButton);
+    
+                    // Tags (assuming you have a tags array in productData)
+                    const tags = productData.tags; 
+                    if (tags && tags.length > 0) {
+                        const tagsContainer = document.createElement('div');
+                        tagsContainer.classList.add('tags-container');
+                        tags.forEach(tag => {
+                            const tagElement = document.createElement('div');
+                            tagElement.classList.add('tag');
+                            tagElement.textContent = tag;
+                            tagsContainer.appendChild(tagElement);
+                        });
+                        productCard.appendChild(tagsContainer);
+                    }
+    
+                    // Append product card to the container
+                    productContainer.appendChild(productCard);
+                });
+            });
+        }
+        // Helper function to create Buy Now button elements
+        function createBuyNowButton(productId) {
+            const buyNowButton = document.createElement('button');
+            buyNowButton.classList.add('buy-now-button');
+            buyNowButton.textContent = 'Buy Now';
 
-                                              // Check if sizes exist
-                                              if (productData.sizes && productData.sizes.length > 0) {
-                                                const sizeLabel = document.createElement('div');
-                                                sizeLabel.classList.add('size-label');
-                                                sizeLabel.textContent = 'Available Sizes:';
-                                                productCard.appendChild(sizeLabel);
-                
-                                                const sizeList = document.createElement('ul');
-                                                sizeList.classList.add('size-list');
-                                                productData.sizes.forEach(size => {
-                                                    const sizeItem = document.createElement('li');
-                                                    sizeItem.textContent = size;
-                                                    sizeList.appendChild(sizeItem);
-                                                });
-                                                productCard.appendChild(sizeList);
-                                            }
-                
-                                            // Check if colors exist
-                                            if (productData.colors && productData.colors.length > 0) {
-                                                const colorLabel = document.createElement('div');
-                                                colorLabel.classList.add('color-label');
-                                                colorLabel.textContent = 'Available Colors:';
-                                                productCard.appendChild(colorLabel);
-                
-                                                const colorContainer = document.createElement('div');
-                                                colorContainer.classList.add('color-radio'); // Apply your custom CSS class for colors
-                
-                                                productData.colors.forEach(color => {
-                                                    const colorRadio = document.createElement('input');
-                                                    colorRadio.type = 'radio';
-                                                    colorRadio.name = `${productId}-color`;
-                                                    colorRadio.value = color;
-                                                    colorRadio.id = `${productId}-${color}`; // Unique ID based on productId and color
-                
-                                                    const colorLabel = document.createElement('label');
-                                                    colorLabel.setAttribute('for', `${productId}-${color}`);
-                                                    colorLabel.style.backgroundColor = color; // Set background color dynamically
-                                                    colorContainer.appendChild(colorRadio);
-                                                    colorContainer.appendChild(colorLabel);
-                                                });
-                
-                                                productCard.appendChild(colorContainer);
-                                            }
-                
-                                            // Buy Now button
-                                            const buyNowButton = createBuyNowButton(productId);
-                                            productCard.appendChild(buyNowButton);
-                
-                                            // Tags (assuming you have a tags array in productData)
-                                            const tags = productData.tags; // Assuming tags is an array of tags
-                                            if (tags && tags.length > 0) {
-                                                const tagsContainer = document.createElement('div');
-                                                tagsContainer.classList.add('tags-container');
-                                                tags.forEach(tag => {
-                                                    const tagElement = document.createElement('div');
-                                                    tagElement.classList.add('tag');
-                                                    tagElement.textContent = tag;
-                                                    tagsContainer.appendChild(tagElement);
-                                                });
-                                                productCard.appendChild(tagsContainer);
-                                            }
-                
-                                            // Append product card to the container
-                                            productContainer.appendChild(productCard);
-                                        });
-                                    });
-                                }
-                
-                                // Helper function to create Buy Now button elements
-                                function createBuyNowButton(productId) {
-                                    const buyNowButton = document.createElement('button');
-                                    buyNowButton.classList.add('buy-now-button');
-                                    buyNowButton.textContent = 'Buy Now';
-                
-                                    // Add click event to navigate to product details page with productId
-                                    buyNowButton.addEventListener('click', () => {
-                                        navigateToProductDetails(productId);
-                                    });
-                
-                                    return buyNowButton;
-                                }
-                
-                                // Function to navigate to product details page with productId as query parameter
-                                function navigateToProductDetails(productId) {
-                                    // Redirect to another page with productId as query parameter
-                                    window.location.href = `product-details.html?productId=${productId}`;
-                                }
-                
-                                // Call the function to display products
-                                displayProducts();
-                            </script>
-                        </body>
-                        </html>
-                
+            // Add click event to navigate to product details page with productId
+            buyNowButton.addEventListener('click', () => {
+                navigateToProductDetails(productId);
+            });
+
+            return buyNowButton;
+        }
+
+        // Function to navigate to product details page with productId as query parameter
+        function navigateToProductDetails(productId) {
+            // Redirect to another page with productId as query parameter
+            window.location.href = `product-details.html?productId=${productId}`;
+        }
+
+        function filterProducts() {
+            const searchValue = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+    
+            // Fetch all product cards
+            const productCards = document.querySelectorAll('.product-item');
+    
+            productCards.forEach(card => {
+                const productName = card.querySelector('.title') ? card.querySelector('.title').textContent.toLowerCase() : '';
+                const searchTags = card.getAttribute('data-search-tags') || '';
+                const category = card.getAttribute('data-category') || '';
+    
+                // Check if the product name, tags, or category matches search value
+                if (productName.indexOf(searchValue) > -1 || searchTags.indexOf(searchValue) > -1 || category.indexOf(searchValue) > -1 || searchValue === '') {
+                    card.style.display = 'block'; // Show the card
+                } else {
+                    card.style.display = 'none'; // Hide the card
+                }
+            });
+    
+            // Apply sorting if selected
+            if (filterValue === 'price_low_to_high') {
+                sortProductsByPrice(true); // Ascending order
+            } else if (filterValue === 'price_high_to_low') {
+                sortProductsByPrice(false); // Descending order
+            }
+        }
+    
+        // Event listeners for search and filter
+        searchInput.addEventListener('input', filterProducts);
+        filterSelect.addEventListener('change', filterProducts);
+    
+        // Call the function to display products
+        displayProducts();
+
+        // Function to sort products by price
+        function sortProductsByPrice(ascending) {
+            const productContainer = document.getElementById('productContainer');
+            const productsArray = Array.from(productContainer.children);
+
+            productsArray.sort((a, b) => {
+                const priceA = parseFloat(a.querySelector('.price').textContent.replace('₹ ', '').replace(',', ''));
+                const priceB = parseFloat(b.querySelector('.price').textContent.replace('₹ ', '').replace(',', ''));
+
+                if (ascending) {
+                    return priceA - priceB;
+                } else {
+                    return priceB - priceA;
+                }
+            });
+
+            productsArray.forEach(product => {
+                productContainer.appendChild(product); // Re-append sorted products
+            });
+        }
+
+    </script>
+</body>
+</html>
