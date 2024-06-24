@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .order {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .product-image {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .product-details, .address-details, .tracking-details {
+            margin-bottom: 20px;
+        }
+        .tracking-status {
+            display: flex;
+            justify-content: space-between;
+        }
+        .tracking-status div {
+            width: 100px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .tracking-status .active {
+            background-color: #007bff;
+            color: white;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Tracking</h1>
+        <div id="orderDetails"></div>
+    </div>
+
+    <!-- jQuery (required by Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Firebase SDK scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3WxZBaNJoZA2p7oe6ihTJCFOE6Y0U_7Q",
+            authDomain: "dropshipping-98eb5.firebaseapp.com",
+            projectId: "dropshipping-98eb5",
+            storageBucket: "dropshipping-98eb5.appspot.com",
+            messagingSenderId: "904925867242",
+            appId: "1:904925867242:web:af0abda866826e92f8fb93",
+            measurementId: "G-BVZR8HY1SR"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
+    <!-- Tracking Script -->
+    <script>
+        // Function to fetch order details based on orderId
+        function fetchOrderDetails(orderId) {
+            const orderRef = database.ref(orderId);
+
+            orderRef.once('value', (snapshot) => {
+                const orderData = snapshot.val();
+
+                if (orderData) {
+                    displayOrderDetails(orderData);
+                } else {
+                    displayErrorMessage('Invalid Order ID');
+                }
+            }).catch((error) => {
+                console.error('Error fetching order details:', error);
+                displayErrorMessage('An error occurred while fetching order details.');
+            });
+        }
+
+        // Function to display order details
+        function displayOrderDetails(orderData) {
+            const orderDetailsContainer = document.getElementById('orderDetails');
+            orderDetailsContainer.innerHTML = ''; // Clear previous content
+
+            // Display product details
+            if (orderData.productDetails && orderData.productDetails.length > 0) {
+                const productDetails = orderData.productDetails[0]; // Assuming there's only one product per order
+
+                const productDetailsDiv = document.createElement('div');
+                productDetailsDiv.classList.add('product-details');
+
+                const productImage = document.createElement('img');
+                productImage.classList.add('product-image');
+                productImage.src = productDetails.image;
+                productDetailsDiv.appendChild(productImage);
+
+                const detailsList = document.createElement('ul');
+                if (productDetails.name) detailsList.innerHTML += `<li><strong>Name:</strong> ${productDetails.name}</li>`;
+                if (productDetails.price) detailsList.innerHTML += `<li><strong>Price:</strong> ${productDetails.price}</li>`;
+                if (productDetails.color) detailsList.innerHTML += `<li><strong>Color:</strong> ${productDetails.color}</li>`;
+                if (productDetails.size) detailsList.innerHTML += `<li><strong>Size:</strong> ${productDetails.size}</li>`;
+                if (productDetails.quantity) detailsList.innerHTML += `<li><strong>Quantity:</strong> ${productDetails.quantity}</li>`;
+                if (productDetails.description) detailsList.innerHTML += `<li><strong>Description:</strong> ${productDetails.description}</li>`;
+                
+                productDetailsDiv.appendChild(detailsList);
+                orderDetailsContainer.appendChild(productDetailsDiv);
+            }
+
+            // Display address details
+            if (orderData.addressDetails) {
+                const addressDetails = orderData.addressDetails;
+
+                const addressDetailsDiv = document.createElement('div');
+                addressDetailsDiv.classList.add('address-details');
+
+                const addressKeys = Object.keys(addressDetails);
+                addressKeys.forEach(key => {
+                    const detailElement = document.createElement('p');
+                    detailElement.textContent = `${key}: ${addressDetails[key]}`;
+                    addressDetailsDiv.appendChild(detailElement);
+                });
+
+                orderDetailsContainer.appendChild(addressDetailsDiv);
+            }
+
+            // Display tracking status
+            if (orderData.status) {
+                const trackingDetailsDiv = document.createElement('div');
+                trackingDetailsDiv.classList.add('tracking-details');
+
+                const trackingStatusDiv = document.createElement('div');
+                trackingStatusDiv.classList.add('tracking-status');
+
+                const statuses = ['Ordered', 'Packing', 'Shipping', 'Out for Delivery', 'Delivered'];
+                statuses.forEach((status) => {
+                    const statusElement = document.createElement('div');
+                    statusElement.textContent = status;
+                    if (status === orderData.status) {
+                        statusElement.classList.add('active');
+                    }
+                    trackingStatusDiv.appendChild(statusElement);
+                });
+
+                trackingDetailsDiv.appendChild(trackingStatusDiv);
+                orderDetailsContainer.appendChild(trackingDetailsDiv);
+            }
+        }
+
+        // Function to display error message
+        function displayErrorMessage(message) {
+            const orderDetailsContainer = document.getElementById('orderDetails');
+            orderDetailsContainer.innerHTML = ''; // Clear previous content
+
+            const errorMessageElement = document.createElement('p');
+            errorMessageElement.classList.add('error-message');
+            errorMessageElement.textContent = message;
+
+            orderDetailsContainer.appendChild(errorMessageElement);
+        }
+
+        // Example usage: Fetch and display order details for a given orderId
+        const orderId = prompt("Please enter the Order ID:");
+        if (orderId) {
+            fetchOrderDetails(orderId);
+        }
+    </script>
+</body>
+</html>
