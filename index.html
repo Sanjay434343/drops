@@ -10,156 +10,219 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
-        /* Styling for the Buy Now button */
-        .buy-now-button {
-            background-color: #13792c; /* Green background color */
-            color: #fff; /* White text color */
-            border: none; /* Remove border */
-            padding: 10px 20px; /* Padding inside the button */
-            font-size: 16px; /* Font size */
-            cursor: pointer; /* Cursor style */
-            transition: background-color 0.3s ease; /* Smooth transition for background color */
-            margin-top: 8px; /* Space above the button */
-            width: 100%; /* Make button full width */
-            border-radius: 10px;
-        }
+       /* Resetting default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .buy-now-button:hover {
-            background-color: #02d837; /* Darker green on hover */
-        }
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
 
-        /* Styling for the product card */
-        .product-item {
-            border: 1px solid #ccc;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px; /* Space between product cards */
-        }
+/* Styling for navigation bar */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
 
-        .price {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px; /* Space below the price */
-        }
+.navbar-brand {
+    font-size: 30px;
+    margin-left: 50px;
+    margin-bottom: 5px;
+    color: #333;
+}
 
-        /* Style for the tags */
-        .tags-container {
-            margin-top: 10px; /* Space above the tags */
-        }
+.navbar-nav .nav-link {
+    color: #333;
+}
 
-        .tag {
-            display: inline-block;
-            background-color: #ff0303;
-            color: #fcfcfc;
-            padding: 5px 10px;
-            margin-right: 5px;
-            border-radius: 3px;
-            font-size: 14px;
-        }
+.navbar-nav .nav-link:hover {
+    color: #13792c;
+}
 
-        /* Additional styling for responsiveness */
-        @media (max-width: 768px) {
-            .product-item {
-                padding: 10px;
-            }
-            .price {
-                font-size: 16px;
-            }
-        }
+/* Styling for the Buy Now button */
+.buy-now-button {
+    background-color: #13792c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 8px;
+    width: 90%;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 30px;
+    
+}
 
-        /* Sizes Section */
-        .product-item .size-label {
-            font-weight: bold;
-            margin-top: 10px;
-        }
+.buy-now-button:hover {
+    background-color: #02d837;
+}
 
-        .product-item .size-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+/* Styling for the product card */
+.product-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative; /* Ensure relative positioning */
+}
 
-        .product-item .size-list li {
-            display: inline-block;
-            background-color: #f0f0f0;
-            color: #333;
-            padding: 5px 10px;
-            margin-right: 5px;
-            border-radius: 3px;
-            font-size: 14px;
-        }
+.price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
-        /* Colors Section */
-        .product-item .color-label {
-            font-weight: bold;
-            margin-top: 10px;
-        }
+/* Style for the tags */
+.tags-container {
+    margin-top: 10px;
+}
 
-        .product-item .color-radio {
-            margin-top: 5px;
-        }
+.tag {
+    display: inline-block;
+    background-color: #ff0303;
+    color: #fcfcfc;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+}
 
-        .product-item .color-radio input[type="radio"] {
-            display: none; /* Hide default radio input */
-        }
+/* Sizes Section */
+.product-item .size-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-        .product-item .color-radio label {
-            display: inline-block;
-            width: 30px; /* Adjust based on your design */
-            height: 30px; /* Adjust based on your design */
-            border-radius: 50%; /* Make it round */
-            margin-right: 10px;
-            cursor: pointer;
-            border: 2px solid transparent; /* Default border */
-            transition: border-color 0.3s ease; /* Smooth transition for border color */
-            border: 1px solid #000;
-        }
+.product-item .size-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 
-        .product-item .color-radio label:hover {
-            border-color: #333; /* Dark border on hover */
-        }
+.product-item .size-list li {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+}
 
-        .product-item .color-radio input[type="radio"]:checked + label {
-            border-color: #333; /* Border color when selected */
-        }
+/* Colors Section */
+.product-item .color-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-        /* Search and Filter Section */
-        .search-filter-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.product-item .color-radio {
+    margin-top: 5px;
+}
 
-        .search-input {
-            padding: 10px;
-            width: 250px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+.product-item .color-radio input[type="radio"] {
+    display: none; /* Hide default radio input */
+}
 
-        .filter-select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+.product-item .color-radio label {
+    display: inline-block;
+    width: 30px; /* Adjust based on your design */
+    height: 10px; /* Adjust based on your design */
+    border-radius: 30px; /* Make it round */
+    margin-right: 10px;
+    cursor: pointer;
+    border: 2px solid transparent; /* Default border */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+    border: 1px solid #000;
+    margin-bottom: 30px;
+    position: relative;
+    bottom: 20px;
+}
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .product-item .size-list li {
-                font-size: 12px; /* Adjust font size for smaller screens */
-            }
+.product-item .color-radio label:hover {
+    border-color: #333; /* Dark border on hover */
+}
 
-            .search-filter-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
+.product-item .color-radio input[type="radio"]:checked + label {
+    border-color: #333; /* Border color when selected */
+}
 
-            .search-input, .filter-select {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-        }
+/* Search and Filter Section */
+.search-filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.filter-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .product-item {
+        padding: 10px;
+    }
+
+    .buy-now-button {
+        bottom: 5px; /* Adjust for smaller screens if needed */
+    }
+
+    .product-item .size-list li {
+        font-size: 12px; /* Adjust font size for smaller screens */
+    }
+
+    .search-filter-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input,
+    .filter-select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+/* Styling for the product card */
+.product-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 2    0px; /* Space between product cards */
+    position: relative;
+    max-height: 500px; /* Limit maximum height of product card */
+    overflow: hidden; /* Hide any content that exceeds the defined dimensions */
+}
+
+/* Styling for the product image */
+.product-item img {
+    max-width: 80%; /* Ensure image does not exceed container width */
+    width: auto; /* Maintain aspect ratio */
+    display: block; /* Ensure image does not add extra space */
+    margin: 0 auto; /* Center image horizontally */
+}
+
     </style>
 </head>
 <body>
@@ -180,7 +243,7 @@
                         <a class="nav-link" href="#">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cart</a>
+                        <a class="nav-link" href="cart.html">Cart</a>
                     </li>
                 </ul>
             </div>
@@ -218,172 +281,171 @@
             appId: "1:904925867242:web:af0abda866826e92f8fb93",
             measurementId: "G-BVZR8HY1SR"
         };
+        
         firebase.initializeApp(firebaseConfig);
-
+        
         // Reference to your Firebase database
         const database = firebase.database();
-
+        
         // Reference to the container where products will be displayed
         const productContainer = document.getElementById('productContainer');
-
+        
         // Reference to search input and filter select
         const searchInput = document.querySelector('.search-input');
         const filterSelect = document.getElementById('filterBy');
-
-        // Function to fetch and display products from Firebase
+        
+        // Function to fetch and display products from Firebase in random order
         function displayProducts() {
-            // Clear existing products to avoid duplicates
-            productContainer.innerHTML = '';
-
             database.ref('products').once('value', (snapshot) => {
+                const products = [];
+        
                 snapshot.forEach((childSnapshot) => {
                     const productData = childSnapshot.val();
-                    const productId = childSnapshot.key;
-    
-                    // Create product card element
-                    const productCard = document.createElement('div');
-                    productCard.classList.add('col-lg-3', 'col-sm-6', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-center', 'product-item', 'my-3');
-    
-                    // Set data attributes for searchTags and category
-                    productCard.setAttribute('data-search-tags', productData.searchTags ? productData.searchTags.join(',').toLowerCase() : '');
-                    productCard.setAttribute('data-category', productData.category ? productData.category.toLowerCase() : '');
-    
-                    // Product images
-                    const images = productData.images;
-                    if (images && images.length > 0) {
-                        const productImage = document.createElement('img');
-                        productImage.src = images[0];
-                        productImage.alt = productData.name;
-                        productCard.appendChild(productImage);
-                    }
-    
-                    // Title (Product Name)
-                    const title = document.createElement('div');
-                    title.classList.add('title');
-                    title.textContent = productData.name;
-                    productCard.appendChild(title);
-    
-                    // Price
-                    const price = document.createElement('div');
-                    price.classList.add('price');
-                    price.textContent = '₹ ' + productData.price;
-                    productCard.appendChild(price);
-    
-                    // Check if colors exist
-                    if (productData.colors && productData.colors.length > 0) {
-                        const colorLabel = document.createElement('div');
-                        colorLabel.classList.add('color-label');
-                        colorLabel.textContent = 'Available Colors:';
-                        productCard.appendChild(colorLabel);
-    
-                        const colorContainer = document.createElement('div');
-                        colorContainer.classList.add('color-radio'); 
-    
-                        productData.colors.forEach(color => {
-                            const colorRadio = document.createElement('input');
-                            colorRadio.type = 'radio';
-                            colorRadio.name = `${productId}-color`;
-                            colorRadio.value = color;
-                            colorRadio.id = `${productId}-${color}`;
-    
-                            const colorLabel = document.createElement('label');
-                            colorLabel.setAttribute('for', `${productId}-${color}`);
-                            colorLabel.style.backgroundColor = color;
-                            colorContainer.appendChild(colorRadio);
-                            colorContainer.appendChild(colorLabel);
-                        });
-    
-                        productCard.appendChild(colorContainer);
-                    } else {
-                        const naLabel = document.createElement('div');
-                        naLabel.textContent = 'Not Applicable';
-                        productCard.appendChild(naLabel);
-                    }
-    
-                    // Buy Now button
-                    const buyNowButton = createBuyNowButton(productId);
-                    productCard.appendChild(buyNowButton);
-    
-                    // Tags (assuming you have a tags array in productData)
-                    const tags = productData.tags; 
-                    if (tags && tags.length > 0) {
-                        const tagsContainer = document.createElement('div');
-                        tagsContainer.classList.add('tags-container');
-                        tags.forEach(tag => {
-                            const tagElement = document.createElement('div');
-                            tagElement.classList.add('tag');
-                            tagElement.textContent = tag;
-                            tagsContainer.appendChild(tagElement);
-                        });
-                        productCard.appendChild(tagsContainer);
-                    }
-    
-                    // Append product card to the container
+                    products.push({
+                        id: childSnapshot.key,
+                        data: productData
+                    });
+                });
+        
+                // Shuffle products array
+                const shuffledProducts = shuffleArray(products);
+        
+                // Display products
+                shuffledProducts.forEach(({ id, data }) => {
+                    const productCard = createProductCard(id, data);
                     productContainer.appendChild(productCard);
                 });
             });
         }
+        
+        // Helper function to create product card elements
+        function createProductCard(productId, productData) {
+            const productCard = document.createElement('div');
+            productCard.classList.add('col-lg-3', 'col-sm-6', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-center', 'product-item', 'my-3');
+        
+            // Set data attributes for search
+            productCard.setAttribute('data-search-tags', productData.searchTags ? productData.searchTags.join(',').toLowerCase() : '');
+            productCard.setAttribute('data-category', productData.category ? productData.category.toLowerCase() : '');
+        
+            // Product images
+            const images = productData.images;
+            if (images && images.length > 0) {
+                const productImage = document.createElement('img');
+                productImage.src = images[0];
+                productImage.alt = productData.name;
+                productCard.appendChild(productImage);
+            }
+        
+            // Title (Product Name)
+            const title = document.createElement('div');
+            title.classList.add('title');
+            title.textContent = productData.name;
+            productCard.appendChild(title);
+        
+            // Price
+            const price = document.createElement('div');
+            price.classList.add('price');
+            price.textContent = '₹ ' + productData.price;
+            productCard.appendChild(price);
+        
+            // Check if colors exist
+            if (productData.colors && productData.colors.length > 0) {
+                const colorLabel = document.createElement('div');
+                colorLabel.classList.add('color-label');
+                colorLabel.textContent = '';
+                productCard.appendChild(colorLabel);
+        
+                const colorContainer = document.createElement('div');
+                colorContainer.classList.add('color-radio');
+        
+                productData.colors.forEach(color => {
+                    const colorRadio = document.createElement('input');
+                    colorRadio.type = 'radio';
+                    colorRadio.name = `${productId}-color`;
+                    colorRadio.value = color;
+                    colorRadio.id = `${productId}-${color}`;
+        
+                    const colorLabel = document.createElement('label');
+                    colorLabel.setAttribute('for', `${productId}-${color}`);
+                    colorLabel.style.backgroundColor = color;
+                    colorContainer.appendChild(colorRadio);
+                    colorContainer.appendChild(colorLabel);
+                });
+        
+                productCard.appendChild(colorContainer);
+            } else {
+                const naLabel = document.createElement('div');
+                naLabel.textContent = 'Not Applicable';
+                productCard.appendChild(naLabel);
+            }
+        
+            // Buy Now button
+            const buyNowButton = createBuyNowButton(productId);
+            productCard.appendChild(buyNowButton);
+        
+            // Tags (assuming you have a tags array in productData)
+            const tags = productData.tags; 
+            if (tags && tags.length > 0) {
+                const tagsContainer = document.createElement('div');
+                tagsContainer.classList.add('tags-container');
+                tags.forEach(tag => {
+                    const tagElement = document.createElement('div');
+                    tagElement.classList.add('tag');
+                    tagElement.textContent = tag;
+                    tagsContainer.appendChild(tagElement);
+                });
+                productCard.appendChild(tagsContainer);
+            }
+        
+            return productCard;
+        }
+        
         // Helper function to create Buy Now button elements
         function createBuyNowButton(productId) {
             const buyNowButton = document.createElement('button');
             buyNowButton.classList.add('buy-now-button');
             buyNowButton.textContent = 'Buy Now';
-
+        
             // Add click event to navigate to product details page with productId
             buyNowButton.addEventListener('click', () => {
                 navigateToProductDetails(productId);
             });
-
+        
             return buyNowButton;
         }
-
+        
         // Function to navigate to product details page with productId as query parameter
         function navigateToProductDetails(productId) {
             // Redirect to another page with productId as query parameter
             window.location.href = `product-details.html?productId=${productId}`;
         }
-
+        
+        // Function to filter products based on search input
         function filterProducts() {
-            const searchValue = searchInput.value.toLowerCase();
-            const filterValue = filterSelect.value;
-    
-            // Fetch all product cards
+            const searchTerm = searchInput.value.toLowerCase();
             const productCards = document.querySelectorAll('.product-item');
-    
+        
             productCards.forEach(card => {
-                const productName = card.querySelector('.title') ? card.querySelector('.title').textContent.toLowerCase() : '';
+                const productName = card.querySelector('.title').textContent.toLowerCase();
                 const searchTags = card.getAttribute('data-search-tags') || '';
                 const category = card.getAttribute('data-category') || '';
-    
-                // Check if the product name, tags, or category matches search value
-                if (productName.indexOf(searchValue) > -1 || searchTags.indexOf(searchValue) > -1 || category.indexOf(searchValue) > -1 || searchValue === '') {
-                    card.style.display = 'block'; // Show the card
+        
+                if (productName.includes(searchTerm) || searchTags.includes(searchTerm) || category.includes(searchTerm) || searchTerm === '') {
+                    card.style.display = 'block';
                 } else {
-                    card.style.display = 'none'; // Hide the card
+                    card.style.display = 'none';
                 }
             });
-    
-            // Apply sorting if selected
-            if (filterValue === 'price_low_to_high') {
-                sortProductsByPrice(true); // Ascending order
-            } else if (filterValue === 'price_high_to_low') {
-                sortProductsByPrice(false); // Descending order
-            }
         }
-    
-        // Event listeners for search and filter
+        
+        // Event listener for input changes in search bar
         searchInput.addEventListener('input', filterProducts);
-        filterSelect.addEventListener('change', filterProducts);
-    
-        // Call the function to display products
-        displayProducts();
-
+        
         // Function to sort products by price
         function sortProductsByPrice(ascending) {
-            const productContainer = document.getElementById('productContainer');
-            const productsArray = Array.from(productContainer.children);
+            const productCards = Array.from(productContainer.children);
 
-            productsArray.sort((a, b) => {
+            productCards.sort((a, b) => {
                 const priceA = parseFloat(a.querySelector('.price').textContent.replace('₹ ', '').replace(',', ''));
                 const priceB = parseFloat(b.querySelector('.price').textContent.replace('₹ ', '').replace(',', ''));
 
@@ -394,11 +456,35 @@
                 }
             });
 
-            productsArray.forEach(product => {
-                productContainer.appendChild(product); // Re-append sorted products
+            productCards.forEach(card => {
+                productContainer.appendChild(card); // Re-append sorted products
             });
         }
 
+        // Event listener for filter select changes
+        filterSelect.addEventListener('change', () => {
+            filterProducts(); // Filter products based on current search input
+            const filterValue = filterSelect.value;
+            if (filterValue === 'price_low_to_high') {
+                sortProductsByPrice(true);
+            } else if (filterValue === 'price_high_to_low') {
+                sortProductsByPrice(false);
+            }
+        });
+
+        // Shuffle array function (Fisher-Yates shuffle algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Initialize the display of products
+        displayProducts();
     </script>
 </body>
 </html>
+
+        
