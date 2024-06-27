@@ -332,10 +332,143 @@
                     }
                 }
                 
+        /* Top navigation bar styles */
+.top-nav {
+    background-color: #252424;
+    color: white;
+    padding: 5px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.top-nav .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.top-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.top-nav a:hover {
+    background-color: #cccaca;
+}
+
+/* Adjust body padding to accommodate fixed nav */
+body {
+    padding-top: 60px; /* Adjust according to your nav bar height */
+}
+
+
+    </style>
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+           
+        }
         
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .share-button {
+            display: inline-flex;
+            margin: 5px;
+            padding: 10px 5px;
+            align-items: center;
+            justify-content: center;
+            background-color: #150d0d00;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .share-button:hover {
+            background-color: #323232;
+        }
+        
+
+        .s-button{
+            background-color: transparent;
+            text-decoration: none;
+            border: none;
+            color: whitesmoke;
+        }
+
+        .icon-img{
+            width: 35px;
+        }
     </style>
 </head>
 <body>
+    <nav class="top-nav">
+        <div class="container">
+            <a href="index.html"><span class="material-symbols-outlined">
+                arrow_back_ios
+                </span></a>
+       
+            <button id="openModalButton" class="s-button"><span class="material-symbols-outlined">
+                share
+                </span></button>
+      
+        </div>
+    </nav>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share this Product</h2>
+            <a href="#" id="shareFacebook" class="share-button"><img src="https://img.icons8.com/?size=100&id=uLWV5A9vXIPu&format=png&color=000000" class="icon-img" alt=""></a>
+            <a href="#" id="shareTwitter" class="share-button"><img src="https://img.icons8.com/?size=100&id=6Fsj3rv2DCmG&format=png&color=000000" class="icon-img" alt=""></a>
+            <a href="#" id="shareEmail" class="share-button"><img src="https://img.icons8.com/?size=100&id=13826&format=png&color=000000" class="icon-img" alt=""></a>
+            <a href="#" id="shareWhatsApp" class="share-button"><img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" class="icon-img" alt=""></a>
+            <a href="#" id="shareInstagram" class="share-button"><img src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png&color=000000" class="icon-img" alt=""></a>
+        </div>
+    </div>
+
     <div class="wrapper">
         <div class="col-1-2">
             <div class="product-wrap">
@@ -584,6 +717,48 @@
             getProductDetails();
             fetchRandomProducts();
         });
-    </script>
+
+
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Modal functionality
+                const modal = document.getElementById('shareModal');
+                const openModalButton = document.getElementById('openModalButton');
+                const closeModalButton = document.querySelector('.close');
+        
+                openModalButton.onclick = function() {
+                    modal.style.display = "block";
+                }
+        
+                closeModalButton.onclick = function() {
+                    modal.style.display = "none";
+                }
+        
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+        
+                // Share buttons functionality
+                const shareFacebook = document.getElementById('shareFacebook');
+                const shareTwitter = document.getElementById('shareTwitter');
+                const shareEmail = document.getElementById('shareEmail');
+                const shareWhatsApp = document.getElementById('shareWhatsApp');
+                const shareInstagram = document.getElementById('shareInstagram');
+                
+                const productUrl = window.location.href;
+        
+                shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+                shareTwitter.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}`;
+                shareEmail.href = `mailto:?subject=Check out this product&body=${encodeURIComponent(productUrl)}`;
+                shareWhatsApp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(productUrl)}`;
+                shareInstagram.href = `https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`;
+            });
+        </script>
+        
+
+        
 </body>
 </html>
