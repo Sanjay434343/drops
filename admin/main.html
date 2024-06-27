@@ -37,7 +37,6 @@
     input[type="text"],
     input[type="number"],
     input[type="url"],
-    input[type="file"],
     select,
     textarea {
       width: calc(100% - 20px);
@@ -117,8 +116,8 @@
         <label for="productTags">Tags (Separate with commas):</label>
         <input type="text" id="productTags" placeholder="Enter tags"><br><br>
 
-        <label for="imageUrl">Image:</label>
-        <input type="file" id="imageFile" accept="image/*"><br><br>
+        <label for="imageUrl">Image URLs (Separate with commas):</label>
+        <input type="text" id="imageUrl" placeholder="Enter image URLs"><br><br>
         
         <label for="productColor">Add Color (Separate with commas):</label>
         <input type="text" id="productColor" placeholder="Enter colors"><br><br>
@@ -151,6 +150,9 @@
           <label><input type="checkbox" value="11"> 11</label>
         </div><br>
         
+        <!-- New Field: Tags -->
+      
+        
         <!-- Select category from Firebase -->
         <label for="categorySelect">Select Category:</label>
         <select id="categorySelect" required>
@@ -162,7 +164,7 @@
 
     <div id="statusMessage"></div>
   </div>
-
+<br><br><br><br><br>
   <!-- Include Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
@@ -209,24 +211,15 @@ function fetchCategories() {
 // Call fetchCategories function to populate the dropdown
 fetchCategories();
 
-// Function to convert image file to Base64 string
-function convertToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-
 // Form submission handling
 const productForm = document.getElementById('productForm');
 
-productForm.addEventListener('submit', async function(event) {
+productForm.addEventListener('submit', function(event) {
   event.preventDefault();
 
   const productName = document.getElementById('productName').value;
   const productPrice = document.getElementById('productPrice').value;
+  const imageUrl = document.getElementById('imageUrl').value.split(',');
   const productTags = document.getElementById('productTags').value.split(',').map(tag => tag.trim());
   const searchTags = document.getElementById('searchTags').value.split(',').map(tag => tag.trim());
   const productDescription = document.getElementById('productDescription').value;
@@ -254,18 +247,11 @@ productForm.addEventListener('submit', async function(event) {
     shoeSizes = Array.from(shoeSizesCheckboxes).map(checkbox => checkbox.value);
   }
 
-  // Convert the image file to Base64 string
-  const imageFile = document.getElementById('imageFile').files[0];
-  let base64Image = '';
-  if (imageFile) {
-    base64Image = await convertToBase64(imageFile);
-  }
-
   // Prepare the product object
   const newProduct = {
     name: productName,
     price: productPrice,
-    image: base64Image,
+    images: imageUrl,
     colors: productColor,
     clothingSizes: clothingSizes,
     shoeSizes: shoeSizes,
