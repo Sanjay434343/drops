@@ -181,7 +181,7 @@ body {
 
   .product-item img {
         max-width: 80%; /* Ensure images take up full width in mobile view */
-        height: auto; /* Ensure images maintain aspect ratio */
+        height: 50%; /* Ensure images maintain aspect ratio */
         margin: 0; /* Remove margin around images in mobile view */
         object-fit: contain;
     }
