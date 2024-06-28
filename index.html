@@ -20,12 +20,12 @@
         /* Body styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff;
+            background-color: #9aceff;
         }
 
         /* Styling for navigation bar */
         .navbar {
-            background-color: #ffffff;
+            background-color: #3da1ff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 10px 0;
         }
@@ -47,7 +47,7 @@
 
         /* Styling for the Buy Now button */
         .buy-now-button {
-            background-color: #13792c;
+            background-color: #1e53a3;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -62,10 +62,11 @@
             left: 50%;
             transform: translateX(-50%);
             margin-top: 30px;
+            
         }
 
         .buy-now-button:hover {
-            background-color: #02d837;
+            background-color: #071f44;
         }
 
         /* Styling for the product card */
@@ -220,7 +221,6 @@
 body {
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
-    background-color: #f8f9fa; /* Light gray background */
 }
 
 .container {
@@ -229,6 +229,7 @@ body {
     padding: 0 15px;
     margin-bottom: 10px;
 }
+
 
 /* Navbar styles */
 .navbar-brand {
@@ -253,8 +254,8 @@ body {
 
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link:hover {
-    color: #f44336; /* Active and hover link color */
-    border-color: #f44336; /* Active and hover link border color */
+    color: #3678f4; /* Active and hover link color */
+    border-color: #3678f4; /* Active and hover link border color */
 }
 
 /* Product card styles */
@@ -269,14 +270,14 @@ body {
 }
 
 .product-item:hover {
-    transform: translateY(-5px); /* Move card up on hover */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-20px); /* Move card up on hover */
+    box-shadow: 0 4px 20px rgba(184, 81, 81, 0.15);
 }
 
 .product-item img {
     max-width: 80%;
     height: auto; /* Ensure images maintain aspect ratio */
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #000000;
     border-radius: 5px;
     margin-top: 5px;
 }
@@ -534,7 +535,7 @@ body {
             if (productData.colors && productData.colors.length > 0) {
                 const colorLabel = document.createElement('div');
                 colorLabel.classList.add('color-label');
-                colorLabel.textContent = '  ';
+                colorLabel.textContent = '';
                 productCard.appendChild(colorLabel);
 
                 const colorContainer = document.createElement('div');
